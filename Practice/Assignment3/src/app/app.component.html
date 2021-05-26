@@ -1,0 +1,14 @@
+<button class="btn btn-primary" (click)="onNewPassword()">Display Details</button>
+<p *ngIf="newPassword">Secret Password: {{secret}}</p>
+<!-- <ng-template #noPassword>
+    <p>Enter password</p>
+</ng-template> -->
+<div 
+[ngStyle]="{backgroundColor: i >= 4 ? 'blue' : 'transparent'}"
+[ngClass]="{'white-text': i >= 4}"
+*ngFor="let pass of log; let i = index"> {{pass}} </div>
+<!-- OR -->
+<!-- <div 
+[ngStyle]="{backgroundColor: pass >= 5 ? 'blue' : 'transparent'}"
+[ngClass]="{'white-text': pass >= 5}"
+*ngFor="let pass of log"> {{pass}} </div> -->
