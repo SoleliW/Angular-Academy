@@ -1,0 +1,11 @@
+.row {
+    margin-top: 10px;
+}
+
+/* input.ng-invalid,
+textarea.ng-invalid.ng-touched {
+    border: 1px solid red;
+} */
+.col-xs-12 img{
+    max-height: 300px;
+}
