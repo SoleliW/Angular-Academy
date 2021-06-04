@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -18,16 +18,21 @@ export class AuthComponent {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  authForm = new FormGroup({
+    "email": new FormControl("", [Validators.required, Validators.email]),
+    "password": new FormControl("", [Validators.required, Validators.minLength(6)]),
+});
+
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  onSubmit(form: NgForm) { 
-    if (!form.valid) {
+  onSubmit() { 
+    if (!this.authForm.valid) {
       return;
     }
-    const password = form.value.password;
-    const email = form.value.email;
+    const password = this.authForm.value.password;
+    const email = this.authForm.value.email;
 
     let authObs: Observable<AuthResponseData>;
 
@@ -50,7 +55,7 @@ export class AuthComponent {
     }
     );
 
-    form.reset();
+    this.authForm.reset();
   }
 
 }
