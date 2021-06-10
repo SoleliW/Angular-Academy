@@ -28,12 +28,15 @@ export class AuthComponent implements OnInit, OnDestroy {
   authForm = new FormGroup({
     "email": new FormControl("", [Validators.required, Validators.email]),
     "password": new FormControl("", [Validators.required, Validators.minLength(6)]),
-});
+  });
 
   ngOnInit() {
     this.store.select('auth').subscribe(authState => {
       this.isLoading = authState.loading;
       this.error = authState.authError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
     });
   }
   onSwitchMode() {
@@ -44,8 +47,8 @@ export class AuthComponent implements OnInit, OnDestroy {
     if (!this.authForm.valid) {
       return;
     }
-    const password = this.authForm.value.password;
     const email = this.authForm.value.email;
+    const password = this.authForm.value.password;
 
     let authObs: Observable<AuthResponseData>;
 

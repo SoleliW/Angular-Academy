@@ -31,8 +31,7 @@ export function authReducer(state = initialState, action: AuthActions.AuthAction
         case AuthActions.LOGOUT:
             return {
                 ...state,
-                user: null,
-                loading: false
+                user: null
             };
         case AuthActions.LOGIN_START:
             return {

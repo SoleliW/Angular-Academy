@@ -12,7 +12,7 @@ constructor(private router: Router, private store: Store<fromApp.AppState>) {}
 
     canActivate(route: ActivatedRouteSnapshot, 
             router: RouterStateSnapshot): 
-                boolean  | Promise<boolean> | Observable<boolean | UrlTree > {
+                boolean | UrlTree | Promise<boolean | UrlTree> | Observable<boolean | UrlTree > {
                 return this.store.select('auth').pipe(
                     take(1), 
                     map(authState => {
