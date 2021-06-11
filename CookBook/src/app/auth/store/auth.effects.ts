@@ -1,4 +1,4 @@
-import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Actions, createEffect, Effect, ofType } from '@ngrx/effects';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -19,8 +19,8 @@ export interface AuthResponseData {
 
 @Injectable()
 export class AuthEffects {
-    @Effect()
-    authLogin = this.actions$.pipe(
+    authLogin$ = createEffect(
+        () => this.actions$.pipe(
         ofType(AuthActions.LOGIN_START),
         switchMap(
             (authData: AuthActions.LoginStart) => {
@@ -61,14 +61,15 @@ export class AuthEffects {
                 })
             );
         })
-    );
+    ));
     
-    @Effect({dispatch: false})
-    authSuccess = this.actions$.pipe(
+    authSuccess$ = createEffect( () => this.actions$.pipe(
         ofType(AuthActions.LOGIN),
         tap(() => {
             this.router.navigate(['/']);
         })
+        ),
+         {dispatch: false}
     );
 
     constructor( private actions$: Actions, private http: HttpClient, private router: Router) {}
