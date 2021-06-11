@@ -1,8 +1,7 @@
 import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
-import { AuthService, AuthResponseData } from './auth.service';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { Store } from '@ngrx/store';
@@ -21,7 +20,8 @@ export class AuthComponent implements OnInit, OnDestroy {
   @ViewChild(PlaceholderDirective, {static: false}) alertHost: PlaceholderDirective;
 
   private closeSub: Subscription;
-  constructor(private authService: AuthService, 
+  private storeSub: Subscription;
+  constructor(
               private componentFactoryResolver: ComponentFactoryResolver,
               private store: Store<fromApp.AppState>) {}
 
@@ -31,7 +31,7 @@ export class AuthComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.store.select('auth').subscribe(authState => {
+    this.storeSub = this.store.select('auth').subscribe(authState => {
       this.isLoading = authState.loading;
       this.error = authState.authError;
       if (this.error) {
@@ -50,26 +50,29 @@ export class AuthComponent implements OnInit, OnDestroy {
     const email = this.authForm.value.email;
     const password = this.authForm.value.password;
 
-    let authObs: Observable<AuthResponseData>;
-
     this.isLoading = true;
     if(this.isLoginMode) {
       this.store.dispatch(new AuthActions.LoginStart({
         email: email, password: password
       }));
     } else {
-      authObs = this.authService.signup(email, password)
+      this.store.dispatch(new AuthActions.SignupStart({
+        email: email, password: password
+      }));
     }
     this.authForm.reset();
   }
 
   onHandleError() {
-    this.error = null;
+    this.store.dispatch(new AuthActions.ClearError());
   }
 
   ngOnDestroy() {
     if (this.closeSub){
       this.closeSub.unsubscribe();
+    }
+    if (this.storeSub) {
+      this.storeSub.unsubscribe();
     }
   }
 
