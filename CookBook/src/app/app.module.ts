@@ -1,47 +1,36 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'
+import { HttpClientModule } from '@angular/common/http';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
-import { RecipeComponent } from './recipe/recipe.component';
-import { RecipeListComponent } from './recipe/recipe-list/recipe-list.component';
-import { RecipeDetailComponent } from './recipe/recipe-detail/recipe-detail.component';
-import { RecipeItemComponent } from './recipe/recipe-list/recipe-item/recipe-item.component';
-import { ShoppingListComponent } from './shopping-list/shopping-list.component';
-import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
-import { DropdownDirective } from './shared/dropdown.directive';
-import { ShoppingListService } from './shopping-list/shopping-list.service';
 import { AppRoutingModule } from './app-routing.module';
-import { RecipeStartComponent } from './recipe/recipe-start/recipe-start.component';
-import { RecipeEditComponent } from './recipe/recipe-edit/recipe-edit.component';
-import { RecipeService } from './recipe/recipe.service';
-
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core.module';
+import { LoggingService } from './logging.service';
+import * as fromApp from './store/app.reducer';
+import { AuthEffects } from './auth/store/auth.effects';
+import { environment } from '../environments/environment';
+import { RecipeEffects } from './recipe/store/recipe.effects';
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    RecipeComponent,
-    RecipeListComponent,
-    RecipeDetailComponent,
-    RecipeItemComponent,
-    ShoppingListComponent,
-    ShoppingEditComponent,
-    DropdownDirective,
-    RecipeStartComponent,
-    RecipeEditComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
+    HttpClientModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    HttpClientModule
+    StoreModule.forRoot(fromApp.appReducer),
+    EffectsModule.forRoot([AuthEffects, RecipeEffects]),
+    StoreDevtoolsModule.instrument({ logOnly: environment.production }),
+    SharedModule,
+    CoreModule
   ],
-  providers: [ShoppingListService, 
-    RecipeService
-  ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  providers: [LoggingService]
 })
 export class AppModule { }
